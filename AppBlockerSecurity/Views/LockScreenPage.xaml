@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AppBlockerSecurity.ViewModels"
+             x:Class="AppBlockerSecurity.Views.LockScreenPage"
+             x:DataType="vm:LockScreenViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#1A1A1A">
+
+    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+        <Label Text="App Bloqueado" FontSize="32" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
+        <Label Text="Resolva o puzzle da IA para acessar:" TextColor="LightGray" HorizontalOptions="Center" />
+
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+            <Label Text="{Binding NumberA}" FontSize="40" TextColor="White"/>
+            <Label Text="+" FontSize="40" TextColor="White"/>
+            <Label Text="{Binding NumberB}" FontSize="40" TextColor="White"/>
+        </HorizontalStackLayout>
+
+        <Entry Placeholder="Resposta" 
+               Text="{Binding UserAnswer}" 
+               Keyboard="Numeric" 
+               HorizontalTextAlignment="Center"
+               TextColor="White"
+               FontSize="24"/>
+
+        <Label Text="{Binding ErrorMessage}" TextColor="#FF5252" HorizontalOptions="Center" />
+
+        <Button Text="Verificar" 
+                Command="{Binding UnlockCommand}" 
+                BackgroundColor="#6200EA"
+                TextColor="White"
+                CornerRadius="10"
+                HeightRequest="55"/>
+    </VerticalStackLayout>
+</ContentPage>
