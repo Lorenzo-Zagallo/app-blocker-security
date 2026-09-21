@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AppBlockerSecurity.Services;
+using AppBlockerSecurity.ViewModels;
+using AppBlockerSecurity.Views;
+using Microsoft.Extensions.Logging;
 
 namespace AppBlockerSecurity
 {
@@ -18,6 +21,11 @@ namespace AppBlockerSecurity
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            builder.Services.AddSingleton<MathPuzzleService>();
+
+            builder.Services.AddTransient<LockScreenViewModel>();
+            builder.Services.AddTransient<LockScreenPage>();
 
             return builder.Build();
         }
