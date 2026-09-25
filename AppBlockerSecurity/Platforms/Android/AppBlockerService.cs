@@ -1,7 +1,9 @@
 ﻿using Android.AccessibilityServices;
 using Android.App;
 using Android.Content;
+using Android.OS;
 using Android.Views.Accessibility;
+using AppBlockerSecurity.Services;
 
 namespace AppBlockerSecurity.Platforms.Android
 {
@@ -32,8 +34,9 @@ namespace AppBlockerSecurity.Platforms.Android
             //"com.spotify.music" // Spotify
         };
 
-        private DateTime _lastTriggerTime = DateTime.MinValue;
-        private string _lastPackage = "";
+        // variáveis reduzidas apenas para evitar spam de intents (1.5 segundos)
+        private DateTime _lastIntentSpam = DateTime.MinValue;
+        private string _lastSpamPackage = "";
 
         // coloque este método dentro da classe AppBlockerService, logo acima do OnAccessibilityEvent
         protected override void OnServiceConnected()
@@ -89,14 +92,19 @@ namespace AppBlockerSecurity.Platforms.Android
 
                 if (!string.IsNullOrEmpty(packageName) && _blockedApps.Contains(packageName))
                 {
-                    // se for o mesmo app e passou menos de 60 segundos, ignora!
-                    if (packageName == _lastPackage && (DateTime.Now - _lastTriggerTime).TotalSeconds < 60)
+                    // 1. o passe livre foi validado pela IA? Se sim, deixa o usuário em paz.
+                    if (SecurityManager.IsAuthorized(packageName))
                         return;
 
-                    // Salva quem foi o último bloqueado e que horas foi
-                    _lastPackage = packageName;
-                    _lastTriggerTime = DateTime.Now;
+                    // 2. prevenção de spam (impede que o Android engasgue criando 10 telas ao mesmo tempo)
+                    if (packageName == _lastSpamPackage && (DateTime.Now - _lastIntentSpam).TotalSeconds < 1.5)
+                        return;
 
+                    _lastSpamPackage = packageName;
+                    _lastIntentSpam = DateTime.Now;
+
+                    // 3. salva qual pacote parou na malha fina e levanta a tela de bloqueio
+                    SecurityManager.CurrentBlockedPackage = packageName;
                     TriggerLockScreen();
                 }
             }

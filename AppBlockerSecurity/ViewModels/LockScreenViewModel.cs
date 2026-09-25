@@ -51,6 +51,9 @@ namespace AppBlockerSecurity.ViewModels
 
             if (isSuccess)
             {
+                // A IA CARIMBA O ACESSO POR 60 SEGUNDOS AQUI
+                SecurityManager.AuthorizeAccess(60);
+
                 // 1. remove a tela de bloqueio
                 await Shell.Current.Navigation.PopModalAsync();
 
